@@ -18,13 +18,11 @@ def get_rank(user,state):
         driver.get(f'https://leetcode.cn/u/{user}')
     try:
         cur = None
-        counter = 0
-        while cur == None and counter < 20:
+        while cur == None:
             html_source = driver.page_source
             Soup = BeautifulSoup(html_source,'html.parser')
             cur = Soup.find('div',class_='text-label-1 dark:text-dark-label-1 flex items-center text-2xl')
-            counter += 1
-            time.sleep(.2)
+            time.sleep(.5)
         return int(cur.text.replace(',',''))
     except:
         return 0

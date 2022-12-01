@@ -1,0 +1,3 @@
+[[[0, 0, 143538], [0, 0, 50], defaultdict(<class 'int'>, {'中国': 9, 'United States': 6, None: 10, '美国': 1, 'Canada': 2, 'Mexico': 1, '圣 
+诞岛': 1, 'New Zealand': 1, 'Japan': 2, 'India': 3, 'Russia': 1, 'China': 1, 'Taiwan': 1})]] [[[0, 0, 141786], [0, 0, 50], defaultdict(<class 'int'>, {'中国': 19, 'Japan': 2, 'Turkey': 1, None: 6, '百慕大': 1, 'India': 4, '美国': 1, 'Taiwan': 1, 'United States': 2, 'Ukraine': 1, 
+'圣诞岛': 1})]]
