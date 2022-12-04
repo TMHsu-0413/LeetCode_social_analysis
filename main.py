@@ -19,7 +19,7 @@ weekly_info = Contest.contest(wcontest,True,df,used_info)
 #biweekly_info = Contest.contest(bicontest,False,df,used_info)
 
 print(used_info)
-writer = pd.ExcelWriter('test.xlsx',engine = 'openpyxl')
+writer = pd.ExcelWriter('data.xlsx',engine = 'openpyxl')
 df.to_excel(writer,sheet_name='contest')
 df2 = pd.DataFrame(data = used_info)
 df2 = df2.T
