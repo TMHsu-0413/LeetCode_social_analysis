@@ -2,17 +2,18 @@ import requests
 import json
 import collections
 import bisect
-from component import get_user_rank
+from component import get_user_info
 
 # state True  -> weekly Contest
 #       False -> Biweekly Contest 
 def contest(contest,state,df,used): 
     for contest_idx in contest:
-        page = 1
+        page = 2
         flag = True
         Country = collections.defaultdict(int)
         gang = collections.defaultdict(list)
         while page < 3:
+            print('Weekly Contest' + str(contest_idx),page)
             if state == True:
                 res = requests.get(f'https://leetcode.com/contest/api/ranking/weekly-contest-{contest_idx}?pagination={page}&region=global')
             else:
@@ -31,13 +32,15 @@ def contest(contest,state,df,used):
                 if user in used:
                     rank = used[user][0]
                 else:
-                    rank = get_user_rank.get_rank(user,region)
+                    rank,company,title,school = get_user_info.get_info(user,region)
+                    if rank == 0:
+                        continue
                     if region == 'CN':
-                        used[user] = (rank,'China')
+                        used[user] = (rank,'China',company,title,school)
                     elif country == "" or country == None:
-                        used[user] = (rank,'Unknown')
+                        used[user] = (rank,'Unknown',company,title,school)
                     else:
-                        used[user] = (rank,country)
+                        used[user] = (rank,country,company,title,school)
                 idx = bisect.bisect_right(score,point)
                 if idx == 0:
                     flag = False
@@ -58,6 +61,7 @@ def contest(contest,state,df,used):
             df.rename(index={n:'Weekly Contest ' + str(contest_idx)},inplace=True)
         else:
             df.rename(index={n:'Biweekly Contest ' + str(contest_idx)},inplace=True)
+        
 
     
     return ans
