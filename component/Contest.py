@@ -32,15 +32,17 @@ def contest(contest,state,df,used):
                 if user in used:
                     rank = used[user][0]
                 else:
-                    rank,company,title,school = get_user_info.get_info(user,region)
+                    rank,company,title,school,language = get_user_info.get_info(user,region)
                     if rank == 0:
                         continue
+                    used[user].append(rank)
                     if region == 'CN':
-                        used[user] = (rank,'China',company,title,school)
+                        used[user].append('China')
                     elif country == "" or country == None:
-                        used[user] = (rank,'Unknown',company,title,school)
+                        used[user].append('Unknown')
                     else:
-                        used[user] = (rank,country,company,title,school)
+                        used[user].append(country)
+                    used[user].extend([company,title,school,language])
                 idx = bisect.bisect_right(score,point)
                 if idx == 0:
                     flag = False

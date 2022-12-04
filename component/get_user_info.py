@@ -8,7 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-driver = webdriver.Edge()
+driver = webdriver.Firefox()
 
 # Get US users current contest ranking
 def get_info(user,state):
@@ -16,29 +16,27 @@ def get_info(user,state):
         driver.get(f'https://leetcode.com/{user}')
     elif state == 'CN':
         driver.get(f'https://leetcode.cn/u/{user}')
-    try:
-        cur = None
-        company,title,school = None,None,None
-        # get country and school
-        print(user)
-        # get ranking
-        count = 0
-        while cur == None and count < 10:
-            html_source = driver.page_source
-            Soup = BeautifulSoup(html_source,'html.parser')
-            if count == 0 and state == 'US':
-                company,title,school = get_company_US(user,Soup)
-            elif count == 0 and state == 'CN':
-                company,title,school = get_company_CN(user,Soup)
-            # ranking tag
-            cur = Soup.find('div',class_='text-label-1 dark:text-dark-label-1 flex items-center text-2xl')
-            count += 1
-            time.sleep(.5)
-        
-        print(int(cur.text.replace(',','')),company,title,school)
-        return [int(cur.text.replace(',','')),company,title,school]
-    except:
-        return 0
+    cur = None
+    language = None
+    company,title,school = None,None,None
+    # get ranking
+    html_source = driver.page_source
+    Soup = BeautifulSoup(html_source,'html.parser')
+    # get company and school
+    if state == 'US':
+        company,title,school = get_company_US(user,Soup)
+    elif state == 'CN':
+        company,title,school = get_company_CN(user,Soup)
+    # ranking tag
+    # 等待這個div@class出現再往下做  Explicit wait
+    cur = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//div[@class="text-label-1 dark:text-dark-label-1 flex items-center text-2xl"]')))
+    #cur = Soup.find('div',class_='text-label-1 dark:text-dark-label-1 flex items-center text-2xl')
+    # 等待這個span@class出現再往下做  Explicit wait
+    language = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//span[@class="inline-flex items-center px-2 whitespace-nowrap text-xs leading-6 rounded-full text-label-3 dark:text-dark-label-3 bg-fill-3 dark:bg-dark-fill-3"]')))
+    #language = Soup.find('span',class_='inline-flex items-center px-2 whitespace-nowrap text-xs leading-6 rounded-full text-label-3 dark:text-dark-label-3 bg-fill-3 dark:bg-dark-fill-3').text
+    language = language.text
+    print(int(cur.text.replace(',','')),company,title,school,language)
+    return [int(cur.text.replace(',','')),company,title,school,language]
 
 def get_company_CN(user,data):
     company,title,school = None,None,None

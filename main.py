@@ -11,7 +11,7 @@ wcontest = [i for i in range(321,320,-1)]
 # Biweekly contest 抓25場
 bicontest = [i for i in range(92,91,-1)]
 # key:user value:rank
-used_info = collections.defaultdict(tuple)
+used_info = collections.defaultdict(list)
 
 df = pd.DataFrame(columns = ['2q_sum','2q_pop','3q_sum','3q_pop','4q_sum','4q_pop'])
 weekly_info = Contest.contest(wcontest,True,df,used_info)
@@ -23,7 +23,7 @@ writer = pd.ExcelWriter('test.xlsx',engine = 'openpyxl')
 df.to_excel(writer,sheet_name='contest')
 df2 = pd.DataFrame(data = used_info)
 df2 = df2.T
-df2.columns = ['ranking','country','company','title','school']
+df2.columns = ['ranking','country','company','title','school','language']
 df2.to_excel(writer,sheet_name='user')
 writer.save()
 writer.close()
