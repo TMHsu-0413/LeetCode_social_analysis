@@ -19,4 +19,14 @@ python main.py
 ## 結果
 - 產出一個Excel檔 data.xlsx，裡面包含2個Sheet
   1. 每場contest分別答對題數的分數加總及人數
-  2. 上述爬到的所有使用者個人資訊(公司，學校，分數等等...)
+    - Xq_sum - 答對X題的ranking總和
+    - Xq_pop - 答對X題的人數
+    - all_pop - 該次競賽參加總人數
+
+  2. 上述爬到的所有使用者個人資訊(公司，學校，分數等等...，空白代表使用者無填寫)
+    - ranking - 現在的ranking
+    - country - 來自哪個國家
+    - company - 目前的公司
+    - title   - 目前的職稱
+    - school  - 目前的學校
+    - language - 最常用的語言 
