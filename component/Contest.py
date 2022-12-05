@@ -1,5 +1,4 @@
 import requests
-import json
 import collections
 import bisect
 from component import get_user_info
@@ -13,7 +12,7 @@ def contest(contest,state,df,used):
         all_pop = 0
         # 紀錄答對2題,3題,4題的所有ranking
         gang = collections.defaultdict(list)
-        while page:
+        while page < 2:
             print('Weekly Contest' + str(contest_idx),page)
             if state == True:
                 res = requests.get(f'https://leetcode.com/contest/api/ranking/weekly-contest-{contest_idx}?pagination={page}&region=global')
@@ -41,7 +40,7 @@ def contest(contest,state,df,used):
                     break
                 if user in used:
                     rank = used[user][0]
-                    used[user][-1] += 1
+                    used[user][6] += 1
                 else:
                     rank,company,title,school,language,views,solution,discuss,reputation,reput_level = get_user_info.get_info(user,region)
                     if rank == 0:

@@ -1,32 +1,24 @@
-import requests
-import json
-import collections
 import time
-import bisect
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-chrome_options = webdriver.ChromeOptions()
-user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-chrome_options.add_argument("--proxy-server=http://202.20.16.82:10152")
-chrome_options.add_argument(f'user-agent={user_agent}')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--window-size=1920,1080')
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--allow-running-insecure-content')
-driver = webdriver.Chrome(chrome_options=chrome_options)
+options = webdriver.ChromeOptions()
+options.add_argument('--disable-blink-features=AutomationControlled')
+options.add_argument("--disable-extensions")
+options.add_experimental_option('useAutomationExtension', False)
+options.add_experimental_option("excludeSwitches", ["enable-automation"])
 unit = {'K':1000,'M':1000000}
 # Get US users current contest ranking
 def get_info(user,state):
+    driver = webdriver.Chrome(options=options)
+    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     if state == 'US':
         driver.get(f'https://leetcode.com/{user}')
     elif state == 'CN':
         driver.get(f'https://leetcode.cn/u/{user}')
-    time.sleep(2)
     cur = None
     language = None
     # company and school
@@ -35,15 +27,17 @@ def get_info(user,state):
     views,solution,discuss,reputation,reput_level = None,None,None,None,None
     html_source = driver.page_source
     Soup = BeautifulSoup(html_source,'html.parser')
-    # 等待這個div@class出現再往下做  Explicit wait
-    # ranking tag
+    time.sleep(2)
     try:
+        # 等待這個div@class出現再往下做  Explicit wait
+        # ranking tag
         cur = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//div[@class="text-label-1 dark:text-dark-label-1 flex items-center text-2xl"]')))
-
+        print(cur.text)
         # 等待這個span@class出現再往下做  Explicit wait
         # language tag
         language = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//span[@class="inline-flex items-center px-2 whitespace-nowrap text-xs leading-6 rounded-full text-label-3 dark:text-dark-label-3 bg-fill-3 dark:bg-dark-fill-3"]')))
         language = language.text
+        print(language)
         # get company and school
         if state == 'US':
             company,title,school = get_company_US(user,Soup)
@@ -52,9 +46,9 @@ def get_info(user,state):
             company,title,school = get_company_CN(user,Soup)
             views,reput_level = get_stats_CN(user,Soup)
         data = [int(cur.text.replace(',','')),company,title,school,language,views,solution,discuss,reputation,reput_level]
-        print(data)
         return data
-    except:
+    except Exception as e:
+        print(e)
         return [0,None,None,None,None,None,None,None,None,None]
 
 def get_company_CN(user,data):
@@ -133,5 +127,4 @@ def get_stats_US(user,data):
                 reputation = int(float(reputation[:-1]) * unit[reputation[-1]])
             else:
                 reputation = int(reputation)
-
     return views,solution,discuss,reputation

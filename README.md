@@ -8,7 +8,7 @@
 
 ## 事前準備
 ```python=
-pip install BeautifulSoup4 selenium requests
+pip install BeautifulSoup4 selenium requests pandas openpyxl
 ```
 
 ## 執行

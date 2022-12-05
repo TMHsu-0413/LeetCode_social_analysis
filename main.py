@@ -1,13 +1,9 @@
-import requests
-import json
 import collections
-import bisect
 import pandas as pd
 import openpyxl
 from component import Contest
-from bs4 import BeautifulSoup
 # weekly contest 抓30場
-wcontest = [i for i in range(321,318,-1)]
+wcontest = [i for i in range(321,320,-1)]
 # Biweekly contest 抓25場
 bicontest = [i for i in range(92,90,-1)]
 # key:user value:rank
