@@ -37,5 +37,5 @@ python main.py
       - reputation - 使用者的聲譽 (得到的upvotes數 - downvotes數，包含在別人發問的討論下的回覆)
     - CN獨有
       - reput_level- 使用者的聲譽等級(跟上面的reputation一樣，等級可參考下面這張圖)
-      ![image]('https://github.com/TMHsu-0413/LeetCode_social_analysis/blob/main/cn_reput_level.png')
+      ![image](https://github.com/TMHsu-0413/LeetCode_social_analysis/blob/main/cn_reput_level.png)
    
