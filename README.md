@@ -36,4 +36,6 @@ python main.py
       - discuss - 發過的discuss有幾則(不對於題目的,Ex. Interview question的發文)
       - reputation - 使用者的聲譽 (得到的upvotes數 - downvotes數，包含在別人發問的討論下的回覆)
     - CN獨有
-      - reput_level- 使用者的聲譽等級(跟上面的一樣)
+      - reput_level- 使用者的聲譽等級(跟上面的reputation一樣，等級可參考下面這張圖)
+      ![image]('cn_reput_level.png')
+   
