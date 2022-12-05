@@ -43,7 +43,7 @@ def contest(contest,state,df,used):
                     rank = used[user][0]
                     used[user][-1] += 1
                 else:
-                    rank,company,title,school,language = get_user_info.get_info(user,region)
+                    rank,company,title,school,language,views,solution,discuss,reputation,reput_level = get_user_info.get_info(user,region)
                     if rank == 0:
                         continue
                     used[user].append(rank)
@@ -53,7 +53,7 @@ def contest(contest,state,df,used):
                         used[user].append('Unknown')
                     else:
                         used[user].append(country)
-                    used[user].extend([company,title,school,language,1])
+                    used[user].extend([company,title,school,language,1,views,solution,discuss,reputation,reput_level])
                 gang[idx].append(rank)
             if not flag:
                 break

@@ -6,11 +6,21 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-driver = webdriver.Edge()
+driver = webdriver.Firefox()
 
-driver.get(f'https://leetcode.com/TMHsu/')
+driver.get(f'https://leetcode.com/zokumyoin/')
 time.sleep(3)
 html_source = driver.page_source
 Soup = BeautifulSoup(html_source,'html.parser')
-language = Soup.find('span',class_='inline-flex items-center px-2 whitespace-nowrap text-xs leading-6 rounded-full text-label-3 dark:text-dark-label-3 bg-fill-3 dark:bg-dark-fill-3').text
-print(language)
+reput_level,views = None,0
+for i,child in enumerate(Soup.find('div',class_='mt-4 flex flex-col space-y-4').children):
+    # get reputation level
+    if i == 0:
+        views = int(child.find('div').text[5:])
+    # get views
+    elif i == 1:
+        solution = int(child.find('div').text[8:])
+    elif i == 2:
+        discuss = int(child.find('div').text[7:])
+    elif i == 3:
+        reputation = int(child.find('div').text[10:])
