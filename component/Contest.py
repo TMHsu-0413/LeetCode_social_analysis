@@ -1,6 +1,7 @@
 import requests
 import collections
 import bisect
+import pandas as pd
 from component import get_user_info
 
 # state True  -> weekly Contest
@@ -12,7 +13,7 @@ def contest(contest,state,df,used):
         all_pop = 0
         # 紀錄答對2題,3題,4題的所有ranking
         gang = collections.defaultdict(list)
-        while page < 2:
+        while page:
             print('Weekly Contest' + str(contest_idx),page)
             if state == True:
                 res = requests.get(f'https://leetcode.com/contest/api/ranking/weekly-contest-{contest_idx}?pagination={page}&region=global')
@@ -30,7 +31,7 @@ def contest(contest,state,df,used):
                 score.append(cur_sum)
 
             # 一頁25筆資料
-            for e in res["total_rank"]:
+            for i,e in enumerate(res["total_rank"]):
                 user,point,region,country = e['username'],e['score'],e['data_region'],e['country_name']
                 idx = bisect.bisect_right(score,point)
                 print(idx)
@@ -71,5 +72,13 @@ def contest(contest,state,df,used):
             df.rename(index={n:'Biweekly Contest ' + str(contest_idx)},inplace=True)
     
     # 在最後一格插入這次競賽的總人數
-    ans.append(all_pop)
+        ans.append(all_pop)
+        writer = pd.ExcelWriter('data.xlsx',engine = 'openpyxl')
+        df.to_excel(writer,sheet_name='contest')
+        df2 = pd.DataFrame(data = used)
+        df2 = df2.T
+        df2.columns = ['ranking','country','company','title','school','language','attend_times','views','solution','discuss','reputation','reput_level']
+        df2.to_excel(writer,sheet_name='user')
+        writer.save()
+        writer.close()
     return ans

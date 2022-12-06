@@ -1,6 +1,8 @@
 import time
+import random
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -8,11 +10,15 @@ from selenium.webdriver.support import expected_conditions as EC
 options = webdriver.ChromeOptions()
 options.add_argument('--disable-blink-features=AutomationControlled')
 options.add_argument("--disable-extensions")
+options.add_argument("--headless")
 options.add_experimental_option('useAutomationExtension', False)
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 unit = {'K':1000,'M':1000000}
 # Get US users current contest ranking
 def get_info(user,state):
+    ua = UserAgent()
+    user_agent = ua.random
+    options.add_argument(f'user-agent={user_agent}')
     driver = webdriver.Chrome(options=options)
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
     if state == 'US':
@@ -27,12 +33,12 @@ def get_info(user,state):
     views,solution,discuss,reputation,reput_level = None,None,None,None,None
     html_source = driver.page_source
     Soup = BeautifulSoup(html_source,'html.parser')
-    time.sleep(2)
     try:
         # 等待這個div@class出現再往下做  Explicit wait
         # ranking tag
         cur = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//div[@class="text-label-1 dark:text-dark-label-1 flex items-center text-2xl"]')))
-        print(cur.text)
+        #
+        print(cur.get_attribute("textContent"))
         # 等待這個span@class出現再往下做  Explicit wait
         # language tag
         language = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//span[@class="inline-flex items-center px-2 whitespace-nowrap text-xs leading-6 rounded-full text-label-3 dark:text-dark-label-3 bg-fill-3 dark:bg-dark-fill-3"]')))
@@ -45,7 +51,8 @@ def get_info(user,state):
         elif state == 'CN':
             company,title,school = get_company_CN(user,Soup)
             views,reput_level = get_stats_CN(user,Soup)
-        data = [int(cur.text.replace(',','')),company,title,school,language,views,solution,discuss,reputation,reput_level]
+        data = [int(cur.get_attribute("textContent").replace(',','')),company,title,school,language,views,solution,discuss,reputation,reput_level]
+        time.sleep(random.randint(1,8))
         return data
     except Exception as e:
         print(e)
