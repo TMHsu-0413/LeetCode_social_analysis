@@ -31,27 +31,31 @@ def get_info(user,state):
     company,title,school = None,None,None
     # community stats
     views,solution,discuss,reputation,reput_level = None,None,None,None,None
-    html_source = driver.page_source
-    Soup = BeautifulSoup(html_source,'html.parser')
     try:
         # 等待這個div@class出現再往下做  Explicit wait
         # ranking tag
         cur = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//div[@class="text-label-1 dark:text-dark-label-1 flex items-center text-2xl"]')))
         #
-        print(cur.get_attribute("textContent"))
+        #print(cur.get_attribute("textContent").replace(',',''))
         # 等待這個span@class出現再往下做  Explicit wait
         # language tag
         language = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//span[@class="inline-flex items-center px-2 whitespace-nowrap text-xs leading-6 rounded-full text-label-3 dark:text-dark-label-3 bg-fill-3 dark:bg-dark-fill-3"]')))
         language = language.text
-        print(language)
+        #print(language)
         # get company and school
         if state == 'US':
+            html_source = driver.page_source
+            Soup = BeautifulSoup(html_source,'html.parser')
             company,title,school = get_company_US(user,Soup)
             views,solution,discuss,reputation = get_stats_US(user,Soup)
         elif state == 'CN':
+            html_source = driver.page_source
+            Soup = BeautifulSoup(html_source,'html.parser')
             company,title,school = get_company_CN(user,Soup)
             views,reput_level = get_stats_CN(user,Soup)
+        #print('print data')
         data = [int(cur.get_attribute("textContent").replace(',','')),company,title,school,language,views,solution,discuss,reputation,reput_level]
+        #print(data)
         time.sleep(random.randint(1,8))
         return data
     except Exception as e:
@@ -77,7 +81,8 @@ def get_company_CN(user,data):
 
 def get_company_US(user,data):
     company,title,school = None,None,None
-    Soup = data.find_all('div',class_='flex items-start space-x-[9px]')
+    print('get_company')
+    Soup = data.find_all(class_='flex items-start space-x-[9px]')
     for el in Soup:
         # get company
         if el.find('path')['d'] == 'M7.5 7V5c0-1.484 1.242-2.667 2.75-2.667h3.5c1.508 0 2.75 1.183 2.75 2.667v2H19a3 3 0 013 3v8a3 3 0 01-3 3H5a3 3 0 01-3-3v-8a3 3 0 013-3h2.5zm2 0h5V5c0-.357-.325-.667-.75-.667h-3.5c-.425 0-.75.31-.75.667v2zM5 9a1 1 0 00-1 1v8a1 1 0 001 1h2.5V9H5zm4.5 0v10h5V9h-5zm7 0v10H19a1 1 0 001-1v-8a1 1 0 00-1-1h-2.5z':
@@ -108,30 +113,36 @@ def get_stats_CN(user,data):
     return views,reput_level
 
 def get_stats_US(user,data):
+    print('get stats')
     views,solution,discuss,reputation = 0,0,0,0
-    for i,child in enumerate(data.find('div',class_='mt-4 flex flex-col space-y-4').children):
-        if i == 0:
-            views = child.find('div').text[5:]
-            if views[-1] in unit:
-                views = int(float(views[:-1]) * unit[views[-1]])
-            else:
-                views = int(views)
-        elif i == 1:
-            solution = child.find('div').text[8:]
-            if solution[-1] in unit:
-                solution = int(float(solution[:-1]) * unit[solution[-1]])
-            else:
-                solution = int(solution)
-        elif i == 2:
-            discuss = child.find('div').text[7:]
-            if discuss[-1] in unit:
-                discuss = int(float(discuss[:-1]) * unit[discuss[-1]])
-            else:
-                discuss = int(discuss)
-        elif i == 3:
-            reputation = child.find('div').text[10:]
-            if reputation[-1] in unit:
-                reputation = int(float(reputation[:-1]) * unit[reputation[-1]])
-            else:
-                reputation = int(reputation)
+    all_data = data.find_all(class_='mt-4 flex flex-col space-y-4')
+    for j in range(len(all_data)):
+        if len(all_data[j]) != 4:
+            continue
+        for i,child in enumerate(all_data[j].children):
+            #print(child.find('div').text)
+            if i == 0:
+                views = child.find('div').text[5:]
+                if views[-1] in unit:
+                    views = int(float(views[:-1]) * unit[views[-1]])
+                else:
+                    views = int(views)
+            elif i == 1:
+                solution = child.find('div').text[8:]
+                if solution[-1] in unit:
+                    solution = int(float(solution[:-1]) * unit[solution[-1]])
+                else:
+                    solution = int(solution)
+            elif i == 2:
+                discuss = child.find('div').text[7:]
+                if discuss[-1] in unit:
+                    discuss = int(float(discuss[:-1]) * unit[discuss[-1]])
+                else:
+                    discuss = int(discuss)
+            elif i == 3:
+                reputation = child.find('div').text[10:]
+                if reputation[-1] in unit:
+                    reputation = int(float(reputation[:-1]) * unit[reputation[-1]])
+                else:
+                    reputation = int(reputation)
     return views,solution,discuss,reputation

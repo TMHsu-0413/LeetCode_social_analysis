@@ -4,7 +4,7 @@
 - python 3.11.0
 - BeautifulSoup
 - selenium
-- Firefox (比較不會出錯) or Edge
+- google chrome
 
 ## 事前準備
 ```python=
@@ -13,7 +13,10 @@ pip install BeautifulSoup4 selenium requests pandas openpyxl
 
 ## 執行
 ```python=
+# 爬取Contest答對2,3,4題資料及所有使用者資訊
 python main.py
+# 爬取所有Contest的參加總人數
+python get_contest_pop.py
 ```
 
 ## 結果

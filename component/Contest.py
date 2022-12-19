@@ -16,9 +16,9 @@ def contest(contest,state,df,used):
         while page:
             print('Weekly Contest' + str(contest_idx),page)
             if state == True:
-                res = requests.get(f'https://leetcode.com/contest/api/ranking/weekly-contest-{contest_idx}?pagination={page}&region=global')
+                res = requests.get(f'https://leetcode.com/contest/api/ranking/weekly-contest-{contest_idx}?pagination={page}&region=global', timeout=(3.05,27))
             else:
-                res = requests.get(f'https://leetcode.com/contest/api/ranking/biweekly-contest-{contest_idx}?pagination={page}&region=global')
+                res = requests.get(f'https://leetcode.com/contest/api/ranking/biweekly-contest-{contest_idx}?pagination={page}&region=global', timeout=(3.05,27))
 
             res = res.json()
             cur_sum = 0
@@ -34,7 +34,7 @@ def contest(contest,state,df,used):
             for i,e in enumerate(res["total_rank"]):
                 user,point,region,country = e['username'],e['score'],e['data_region'],e['country_name']
                 idx = bisect.bisect_right(score,point)
-                print(idx)
+                #print(idx)
                 if idx == 1 or idx == 0:
                     # idx => 答對idx題
                     flag = False
@@ -70,7 +70,7 @@ def contest(contest,state,df,used):
             df.rename(index={n:'Weekly Contest ' + str(contest_idx)},inplace=True)
         else:
             df.rename(index={n:'Biweekly Contest ' + str(contest_idx)},inplace=True)
-    
+        #print(used)
     # 在最後一格插入這次競賽的總人數
         ans.append(all_pop)
         writer = pd.ExcelWriter('data.xlsx',engine = 'openpyxl')
