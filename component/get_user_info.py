@@ -21,10 +21,6 @@ def get_info(user,state):
     options.add_argument(f'user-agent={user_agent}')
     driver = webdriver.Chrome(options=options)
     driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-    if state == 'US':
-        driver.get(f'https://leetcode.com/{user}')
-    elif state == 'CN':
-        driver.get(f'https://leetcode.cn/u/{user}')
     cur = None
     language = None
     # company and school
@@ -32,6 +28,10 @@ def get_info(user,state):
     # community stats
     views,solution,discuss,reputation,reput_level = None,None,None,None,None
     try:
+        if state == 'US':
+            driver.get(f'https://leetcode.com/{user}')
+        elif state == 'CN':
+            driver.get(f'https://leetcode.cn/u/{user}')
         # 等待這個div@class出現再往下做  Explicit wait
         # ranking tag
         cur = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,'//div[@class="text-label-1 dark:text-dark-label-1 flex items-center text-2xl"]')))
@@ -58,8 +58,10 @@ def get_info(user,state):
         #print(data)
         time.sleep(random.randint(1,8))
         return data
+        driver.close()
     except Exception as e:
         print(e)
+        driver.close()
         return [0,None,None,None,None,None,None,None,None,None]
 
 def get_company_CN(user,data):

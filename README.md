@@ -27,7 +27,7 @@ python get_contest_pop.py
     - all_pop - 該次競賽參加總人數
 
   2. 上述爬到的所有使用者個人資訊(公司，學校，分數等等...，空白代表使用者無填寫)
-    - ranking - 現在的ranking
+    - rating - 現在的rating
     - country - 來自哪個國家
     - company - 目前的公司
     - title   - 目前的職稱

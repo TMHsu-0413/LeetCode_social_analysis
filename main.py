@@ -3,7 +3,7 @@ import pandas as pd
 import openpyxl
 from component import Contest
 # weekly contest 抓30場
-wcontest = [i for i in range(311,291,-1)]
+wcontest = [275,250,225,175,150,125]
 # Biweekly contest 抓25場
 bicontest = [i for i in range(92,72,-1)]
 # key:user value:rank
